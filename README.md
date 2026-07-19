@@ -32,7 +32,6 @@ verified damage output.
 - Proves: the JSON → function chain works end to end for one character
 
 ### v2 — Per-Level Talent Scaling
-*(coming soon)*
 Talent multipliers restructured to store all levels (`multiplier_by_level`),
 reflecting how talent scaling actually works in-game rather than a single
 fixed value. Requires a two-step lookup (talent level → multiplier) instead
