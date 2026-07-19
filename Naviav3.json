@@ -1,0 +1,144 @@
+{
+  "display_name": "Navia",
+  "element": "Geo",
+  "level": 90,
+  "base_stats": {
+    "max_hp": 12650,
+    "atk": 350,
+    "def": 793,
+    "max_stamina": 240,
+    "elemental_mastery": 0,
+    "crit_rate": 5.0,
+    "crit_dmg": 88.4,
+    "healing_bonus": 0.00,
+    "incoming_healing_bonus": 0.00,
+    "energy_recharge": 100.00,
+    "cd_reduction": 0.00,
+    "shield_stregnth": 0.00,
+    "pyro_dmg_bonus": 0.00,
+    "pyro_resist": 0.00,
+    "hyrdo_dmg_bonus": 0.00,
+    "hydro_res": 0.00,
+    "dendro_dmg_bonus": 0.00,
+    "dendro_resist": 0.00,
+    "electro_dmg_bonus": 0.00,
+    "electro_resist": 0.00,
+    "anemo_dmg_bonus": 0.00,
+    "anemo_resist": 0.00,
+    "cryo_dmg_bonus": 0.00,
+    "cryo_resist": 0.00,
+    "geo_dmg_bonus": 0.00,
+    "geo_resist": 0.00,
+    "physical_dmg_bonus": 0.00,
+    "physcial_resist": 0.00                
+  },
+  "talents": {
+    "normal_attack": {
+      "scaling_stat": "atk",
+      "hits": [
+        {"hit_number": "1", 
+        "multiplier_by_level": {
+          "1": 93.52,
+          "2": 101.13,
+          "3": 108.74,
+          "4": 119.62,
+          "5": 127.23,
+          "6": 135.93,
+          "7": 147.89,
+          "8": 159.85,
+          "9": 171.81,
+          "10": 184.86,
+          "11": 197.91}
+        },
+        {"hit_number": "2", 
+        "multiplier_by_level": {
+          "1": 86.51,
+          "2": 93.55,
+          "3": 100.59,
+          "4": 110.65,
+          "5": 117.69,
+          "6": 125.74,
+          "7": 136.8,
+          "8": 147.87,
+          "9": 158.93,
+          "10": 171,
+          "11": 183.07}
+        },
+        {"hit_number": "3a", 
+        "multiplier_by_level": {
+          "1": 34.89,
+          "2": 37.73,
+          "3": 40.56,
+          "4": 44.62,
+          "5": 47.46,
+          "6": 50.71,
+          "7": 55.17,
+          "8": 59.63,
+          "9": 64.09,
+          "10": 68.96,
+          "11": 73.83}
+        },
+        {"hit_number": "3b",
+        "multiplier_by_level": {
+          "1": 34.89,
+          "2": 37.73,
+          "3": 40.56,
+          "4": 44.62,
+          "5": 47.46,
+          "6": 50.71,
+          "7": 55.17,
+          "8": 59.63,
+          "9": 64.09,
+          "10": 68.96,
+          "11": 73.83}
+        },
+        {"hit_number": "3c", 
+        "multiplier_by_level": {
+          "1": 34.89,
+          "2": 37.73,
+          "3": 40.56,
+          "4": 44.62,
+          "5": 47.46,
+          "6": 50.71,
+          "7": 55.17,
+          "8": 59.63,
+          "9": 64.09,
+          "10": 68.96,
+          "11": 73.83}
+        },
+        {"hit_number": "4", 
+        "multiplier_by_level": {
+          "1": 133.43,
+          "2": 144.29,
+          "3": 155.15,
+          "4": 170.67,
+          "5": 181.53,
+          "6": 193.94,
+          "7": 211.01,
+          "8": 228.07,
+          "9": 245.14,
+          "10": 263.76,
+          "11": 282.38}
+        }
+      ]
+    },
+    "elemental_skill": {
+    "scaling_stat": "atk",
+    "base_multiplier_by_level": {
+      "10": 710.6
+    },
+    "stacks": [
+      {"stacks_consumed": 0, "shardshots": 5, "pct_of_base": 100, "dmg_bonus": 0},
+      {"stacks_consumed": 1, "shardshots": 7, "pct_of_base": 133.33, "dmg_bonus": 0},
+      {"stacks_consumed": 2, "shardshots": 9, "pct_of_base": 166.67, "dmg_bonus": 0},
+      {"stacks_consumed": 3, "shardshots": 11, "pct_of_base": 200, "dmg_bonus": 0},
+      {"stacks_consumed": 4, "shardshots": 11, "pct_of_base": 200, "dmg_bonus": 15},
+      {"stacks_consumed": 5, "shardshots": 11, "pct_of_base": 200, "dmg_bonus": 30},
+      {"stacks_consumed": 6, "shardshots": 11, "pct_of_base": 200, "dmg_bonus": 45}
+    ]
+  }
+  }
+}
+    
+      
+    
