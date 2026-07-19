@@ -37,6 +37,20 @@ reflecting how talent scaling actually works in-game rather than a single
 fixed value. Requires a two-step lookup (talent level → multiplier) instead
 of a flat value.
 
+### v3 - Elemental Skill, Single Talent Level
+Added Navia's Elemental Skill ("Ceremonial Crystalshot") to her JSON, including
+the Crystal Shrapnel resource mechanic (stack-based shardshot count and damage
+bonus). Base multiplier sourced directly from in-game data at talent level 10.
+
+New calculation functions handle Skill's two-part scaling: a multiplicative
+bonus from shardshot count, plus a separate additive DMG bonus for stacks
+consumed beyond 3. Verified by hand across all 6 stack values (1–6).
+
+**Known limitations / next steps:** Skill currently only has multiplier data
+for talent level 10 (not yet expanded to all levels, like Normal Attack).
+1-stack and 2-stack shardshot scaling values are inferred via linear
+interpolation, not confirmed against in-game testing.
+
 ## Architecture Notes
 - **Character / Talent / Weapon / Artifact** are static reference data —
   game-defined values that rarely change.
