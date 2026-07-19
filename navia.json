@@ -1,0 +1,28 @@
+{
+  "display_name": "Navia",
+  "element": "Geo",
+  "level": 90,
+  "base_stats": {
+    "max_hp": 12650,
+    "atk": 350,
+    "def": 793,
+    "elemental_mastery": 0,
+    "crit_rate": 5.0,
+    "crit_dmg": 88.4
+  },
+  "talents": {
+    "normal_attack": {
+      "talent_level": 9,
+      "scaling_stat": "atk",
+      "hits": [
+        {"hit_number": "1", "multiplier": 171.81},
+        {"hit_number": "2", "multiplier": 158.93},
+        {"hit_number": "3a", "multiplier": 64.09},
+        {"hit_number": "3b", "multiplier": 64.09},
+        {"hit_number": "3c", "multiplier": 64.09},
+        {"hit_number": "4", "multiplier": 245.14}
+      ]
+    }
+    
+  }
+}
