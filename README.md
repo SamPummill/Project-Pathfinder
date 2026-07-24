@@ -46,10 +46,42 @@ New calculation functions handle Skill's two-part scaling: a multiplicative
 bonus from shardshot count, plus a separate additive DMG bonus for stacks
 consumed beyond 3. Verified by hand across all 6 stack values (1–6).
 
-**Known limitations / next steps:** Skill currently only has multiplier data
-for talent level 10 (not yet expanded to all levels, like Normal Attack).
-1-stack and 2-stack shardshot scaling values are inferred via linear
-interpolation, not confirmed against in-game testing.
+### v4 — Skill/Burst Full Scaling, Build Compiler
+Corrected the defense formula, expanded Navia's Elemental Skill to the full
+talent level range, implemented her Elemental Burst from scratch, and built
+the first working version of the build compiler.
+
+**Added**
+- Corrected the defense multiplier formula to match the community-verified 
+  KQM/wiki formula, using enemy level rather than a flat enemy DEF value. 
+  All previously verified damage numbers were re-verified against the 
+  corrected formula.
+- Expanded Navia's Elemental Skill to use the full talent level range (1-13) 
+  instead of a single hardcoded level.
+- Implemented Navia's Elemental Burst from scratch, including both the 
+  instant Skill DMG component and the 3-hit Cannon Fire Support component 
+  over its duration. Fully mapped and verified across the full talent level 
+  range.
+- Built the first working version of the build compiler: `aggregate_equipment()` 
+  combines Weapon and Artifact data into one equipment profile, and 
+  `calculate_final_stats()` combines that with Character base stats to 
+  produce final compiled stats (HP, ATK, DEF, CRIT Rate, CRIT DMG, ER, and 
+  elemental DMG bonuses).
+
+**Known limitations**
+- **ATK/DEF calculation discrepancy**: in-game verification against a real 
+  build revealed that the build compiler's final ATK and DEF values don't 
+  match in-game values. Root cause identified: Artifact flat stat 
+  contributions are currently being included in the same bucket as 
+  Character/Weapon flat stats before the percentage multiplier is applied, 
+  when they should be added afterward instead, unscaled. Fix planned for v5.
+- Shardshot hit-count granularity (partial-hit-count damage tables) is 
+  intentionally not modeled, since this is a ceiling calculator assuming 
+  optimal execution, not a hit-registration simulator.
+- Surging Blade (Navia's Skill bonus to Normal Attack) remains out of scope 
+  pending the elemental damage type system.
+- Weapon and Artifact passives beyond flat/percent stat bonuses (set 
+  bonuses, conditional effects) are not yet modeled.
 
 ## Architecture Notes
 - **Character / Talent / Weapon / Artifact** are static reference data —
@@ -61,3 +93,12 @@ interpolation, not confirmed against in-game testing.
   revisit a specific configuration later.
 - This follows a single-source-of-truth principle: fixing a typo in a
   character's base stats should never require updating multiple saved files.
+- Final stat compilation splits contributions into two categories: flat 
+  stats (summed directly) and percentage stats (summed separately, then 
+  applied once as a multiplier) — but only for HP, ATK, and DEF, since 
+  these are the only stats with both a flat and percent form in-game. All 
+  other stats (CRIT Rate, CRIT DMG, Energy Recharge, elemental DMG bonus, 
+  etc.) are purely additive. **Note**: as of v4, Artifact flat contributions 
+  are incorrectly included in the pre-multiplier bucket rather than added 
+  after — this is the known v4 limitation above, with a structural fix 
+  planned for v5.
