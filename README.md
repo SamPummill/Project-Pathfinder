@@ -82,7 +82,7 @@ the first working version of the build compiler.
   pending the elemental damage type system.
 - Weapon and Artifact passives beyond flat/percent stat bonuses (set 
   bonuses, conditional effects) are not yet modeled.
-
+  
 ## Architecture Notes
 - **Character / Talent / Weapon / Artifact** are static reference data —
   game-defined values that rarely change.
@@ -102,3 +102,63 @@ the first working version of the build compiler.
   are incorrectly included in the pre-multiplier bucket rather than added 
   after — this is the known v4 limitation above, with a structural fix 
   planned for v5.
+  
+### v5 — Elemental Damage System, Level Scaling, Build Compiler Fix Verified
+Confirmed and closed out the v4 known issue with real in-game verification, then 
+built a full elemental damage type system (bonus DMG, enemy RES) and ascension-tier 
+level scaling — completing Navia's vertical slice.
+
+**Added**
+- Confirmed the v4 ATK/DEF discrepancy root cause and verified the fix in-game: 
+  restructured the build compiler into three distinct functions (`aggregate_equipment()`, 
+  `calculate_flat_stats()`, `calculate_final_stats()`) so Artifact flat stats are 
+  correctly added after the percent multiplier, not before. DEF matched real in-game 
+  values almost exactly; remaining ATK variance was fully explained by an unmodeled 
+  set bonus, not a calculation error.
+- Restructured Character/Weapon/Artifact JSON schema: separated `bonus_dmg_values` 
+  (elemental and generic damage bonuses) from `base_stats` (flat/percent-eligible 
+  stats only), since these follow different aggregation math. Added `elemental_dmg_type` 
+  at the talent level (not character level) to correctly support characters whose 
+  different talents — or even the same talent under different conditions — deal 
+  different elemental damage types.
+- Built a new Enemy JSON reference type, decoupled from character level, storing 
+  per-element RES values as decimals for direct use in multiplier formulas.
+- Implemented `get_res_multiplier()` using the community-verified RES multiplier 
+  formula (`1 - RES` for the 0–75% range), chained alongside the existing defense 
+  multiplier across all three of Navia's damage functions (Normal Attack, Skill, Burst).
+- Added `calculate_bonus_stats()` to combine Character, Weapon, and Artifact elemental 
+  DMG bonus contributions into one compiled total, threaded through to all damage 
+  calculations via `compiled_stats`.
+- Added ascension-tier level scaling: `base_stats_by_level` stores HP/ATK/DEF/CRIT DMG 
+  at each of Navia's 9 ascension breakpoints (levels 20–100, including the Masterless 
+  Stella Fortuna-gated 95/100 tiers). `get_base_stats_at_level()` and 
+  `get_base_stat_list()` merge level-specific stats with flat, non-scaling stats 
+  (CRIT Rate, ER, EM, etc.) into one compiled block, letting the calculator represent 
+  lower-investment characters accurately rather than assuming max level.
+- Added `set` and `weapon_type` fields to Weapon/Artifact JSON (currently unused, 
+  laying groundwork for future set-bonus and weapon-type-restriction logic).
+
+**Known limitations**
+- Weapon/Artifact set bonuses and conditional passives (e.g., piece-count checks, 
+  party-composition effects like Navia's Mutual Assistance Network) remain unbuilt. 
+  These require infrastructure — party composition modeling, reaction tracking, and 
+  duration/timing — that doesn't exist yet and represents the next major slice of work.
+- Surging Blade (Navia's Skill bonus to Normal Attack) remains out of scope, now 
+  unblocked by the elemental damage system but still dependent on the same 
+  timing/duration infrastructure above.
+- RES reduction/shred (negative RES, RES ≥ 75%) is not modeled — only the standard 
+  0–75% RES interval is implemented.
+
+## Architecture Notes (update)
+- Final stat compilation now happens across four distinct functions, each with a 
+  single responsibility: `aggregate_equipment()` (combine Weapon + Artifacts), 
+  `calculate_flat_stats()` (Character + Weapon flat stats, HP/ATK/DEF percent formula), 
+  `calculate_bonus_stats()` (elemental DMG bonus aggregation across all sources), 
+  `calculate_final_stats()` (final assembly). This resolved the v4 known issue: 
+  Artifact flat contributions are correctly added *after* the percent multiplier is 
+  applied to Character + Weapon's flat total, not folded into the same pre-multiplier 
+  bucket.
+- Elemental damage type lives at the talent level, not the character level, since a 
+  single character's talents (and even a single talent, conditionally) can deal 
+  different elemental types.
+
