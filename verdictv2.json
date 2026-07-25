@@ -1,0 +1,31 @@
+{
+  "display_name" : "Verdict",
+  "weapon_type": "claymore",
+  "level": 90,
+  "flat_stat_values": {
+    "max_hp": 0,
+    "atk": 674,
+    "def": 0,
+    "max_stamina": 0,
+    "elemental_mastery": 0,
+    "crit_rate": 22.1,
+    "crit_dmg": 0,
+    "energy_recharge": 0,
+    "cd_reduction": 0.00,
+    "shield_strength": 0.00
+    },
+  "bonus_dmg_values" : {
+    "pyro": 0.00,     
+    "hydro": 0.00,    
+    "dendro": 0.00,
+    "electro": 0.00,
+    "anemo": 0.00,
+    "cryo": 0.00,
+    "geo": 0.00,
+    "physical": 0.00,
+    "other": 0.00  
+    },
+  "percent_stat_values": {
+    "atk": 0.20
+   }
+}    

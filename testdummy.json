@@ -1,0 +1,13 @@
+{
+  "display_name": "Test Dummy",
+  "resistances": {
+    "pyro": 0.10,
+    "hydro": 0.10,
+    "dendro": 0.10,
+    "electro": 0.10,
+    "anemo": 0.10,
+    "cryo": 0.10,
+    "geo": 0.10,
+    "physical": 0.10                
+    }
+}
