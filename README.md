@@ -20,7 +20,7 @@ Felt right.
 
 ## Versions
 
-### v1 — Vertical Slice: Normal Attack, Single Talent Level
+### v1.1 — Vertical Slice: Normal Attack, Single Talent Level
 Proof of concept for the core architecture: character data lives in JSON,
 Python functions load it, look up the relevant multiplier, and calculate
 verified damage output.
@@ -31,13 +31,13 @@ verified damage output.
   against manual calculation
 - Proves: the JSON → function chain works end to end for one character
 
-### v2 — Per-Level Talent Scaling
+### v1.2 — Per-Level Talent Scaling
 Talent multipliers restructured to store all levels (`multiplier_by_level`),
 reflecting how talent scaling actually works in-game rather than a single
 fixed value. Requires a two-step lookup (talent level → multiplier) instead
 of a flat value.
 
-### v3 - Elemental Skill, Single Talent Level
+### v1.3 - Elemental Skill, Single Talent Level
 Added Navia's Elemental Skill ("Ceremonial Crystalshot") to her JSON, including
 the Crystal Shrapnel resource mechanic (stack-based shardshot count and damage
 bonus). Base multiplier sourced directly from in-game data at talent level 10.
@@ -46,7 +46,7 @@ New calculation functions handle Skill's two-part scaling: a multiplicative
 bonus from shardshot count, plus a separate additive DMG bonus for stacks
 consumed beyond 3. Verified by hand across all 6 stack values (1–6).
 
-### v4 — Skill/Burst Full Scaling, Build Compiler
+### v1.4 — Skill/Burst Full Scaling, Build Compiler
 Corrected the defense formula, expanded Navia's Elemental Skill to the full
 talent level range, implemented her Elemental Burst from scratch, and built
 the first working version of the build compiler.
@@ -103,7 +103,7 @@ the first working version of the build compiler.
   after — this is the known v4 limitation above, with a structural fix 
   planned for v5.
   
-### v5 — Elemental Damage System, Level Scaling, Build Compiler Fix Verified
+### v1.5 — Elemental Damage System, Level Scaling, Build Compiler Fix Verified
 Confirmed and closed out the v4 known issue with real in-game verification, then 
 built a full elemental damage type system (bonus DMG, enemy RES) and ascension-tier 
 level scaling — completing Navia's vertical slice.
@@ -148,6 +148,63 @@ level scaling — completing Navia's vertical slice.
   timing/duration infrastructure above.
 - RES reduction/shred (negative RES, RES ≥ 75%) is not modeled — only the standard 
   0–75% RES interval is implemented.
+  
+## v2.0.0 — Modular Architecture, Buff Tracking System
+
+Phase 2 begins here: the single-notebook prototype (v1.x) has been restructured 
+into a proper multi-file Python project, and a real time-based buff-tracking 
+system has been designed and verified for the first time.
+
+### Added
+- **Project restructured from one notebook into modular files**: `constants.py`, 
+  `data_loader.py`, `damage_core.py` (character-agnostic damage math + Normal 
+  Attack, since NA's structure is consistent across characters), `build_compiler.py` 
+  (Character/Weapon/Artifact aggregation), `buff_system.py` (new), and a 
+  `characters/` package holding character-specific Skill/Burst logic.
+- Renamed several functions to accurately reflect that they're character-specific, 
+  not generic (`calculate_skill_damage` → `calculate_navia_skill_damage`, 
+  `calculate_burst_damage` → `calculate_navia_burst_damage`, and their supporting 
+  functions), since Skill/Burst mechanics genuinely differ per character while 
+  Normal Attack's structure doesn't.
+- `get_normal_attack_frame_events()` (renamed from `frame_counter()`): walks a 
+  character's Normal Attack combo and returns a frame-indexed timeline of every 
+  hit's damage — the first function in the project to answer "when," not just 
+  "how much." Fully verified against Navia's real, community-sourced frame data 
+  (hitmark, next-attack-available frame) across all 6 hits in her combo.
+- Built Nicole's Elemental Skill: a one-time AoE damage hit plus Grace of Kenosis, 
+  a capped ATK buff (`min(ratio × Nicole's ATK, level-specific max)`) granted to 
+  the whole party.
+- **New buff-tracking system**: `is_buff_active()` determines whether a buff 
+  instance is active at a given frame (inclusive start, exclusive end); 
+  `get_active_buff_totals()` collects all currently-active buffs from a list of 
+  instances into one `{stat: value}` dict. `calculate_final_stats()` now accepts 
+  an `active_buffs` parameter, correctly applied in the same "added after the 
+  percent multiplier, unscaled" category as Artifact flat stats — verified with 
+  a real end-to-end test showing Navia's Skill damage correctly increasing when 
+  Grace of Kenosis is active.
+
+### Known limitations
+- **The conductor is not yet built.** This is the next major piece of work: 
+  a function that walks an ordered rotation (e.g. Nicole's Skill → Navia's 
+  Burst → Navia's Skill → Navia's Normal Attack combo), tracks a running 
+  frame count across the entire sequence, creates buff instances when a 
+  triggering action occurs (like casting Nicole's Skill), and checks them 
+  against `is_buff_active()`/`get_active_buff_totals()` at each subsequent 
+  hit — allowing a full team rotation's real DPS to be modeled, including 
+  the exact timing windows where a buff from one character affects another 
+  character's damage. The buff-tracking system (`is_buff_active`, 
+  `get_active_buff_totals`, and `calculate_final_stats()`'s new 
+  `active_buffs` parameter) is fully verified in isolation — this is the 
+  proven foundation the conductor will be built on top of, not yet the 
+  conductor itself.
+- Frame data (hitmark/cancel timing) only exists for Navia; Linnea, 
+  Columbina, and Nicole's Normal Attacks aren't tracked in the community's 
+  frame data (their competitive builds don't rely on Normal Attack), and 
+  Nicole is too recently released for frame data to exist anywhere yet.
+- Nicole's Guidance of Theosis upgrade path (Ascension/Constellation-gated 
+  enhancements to Grace of Kenosis) is deliberately out of scope — requires 
+  party-composition modeling, continuous-on-field-time tracking, and 
+  event-triggered re-buffing, none of which exist yet.
 
 ## Architecture Notes (update)
 - Final stat compilation now happens across four distinct functions, each with a 
@@ -161,4 +218,12 @@ level scaling — completing Navia's vertical slice.
 - Elemental damage type lives at the talent level, not the character level, since a 
   single character's talents (and even a single talent, conditionally) can deal 
   different elemental types.
+- Buffs are never baked into `compiled_stats` at compile time — that dict 
+  represents a character's static, gear-based build and stays time-independent. 
+  Instead, buffs are checked fresh against the current frame each time a 
+  damage calculation runs, and their contribution is passed into 
+  `calculate_final_stats()` per-call via `active_buffs`. This mirrors how 
+  Artifact flat stats are added after the percent multiplier, unscaled — 
+  buffs follow the same category, just re-evaluated per hit instead of 
+  computed once.
 
