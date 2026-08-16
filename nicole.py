@@ -1,7 +1,7 @@
 from damage_core import calculate_base_damage, apply_defense_multiplier, apply_res_multiplier
 
 
-def get_nicole_skill_buff(character_data, talent_level, compiled_stats):
+def get_nicole_skill_buff(character_data, talent_level, compiled_stats, **kwargs):
     # Grace of Kenosis: a flat ATK bonus equal to a ratio of Nicole's own
     # compiled ATK, capped at a level-specific maximum. This bonus is a flat,
     # pre-computed number meant to be applied AFTER the recipient's own
@@ -18,7 +18,7 @@ def get_nicole_skill_buff(character_data, talent_level, compiled_stats):
     return result
 
 
-def get_nicole_skill_dmg(character_data, talent_level, compiled_stats, enemy_level, character_level, enemy_data):
+def get_nicole_skill_dmg(character_data, talent_level, compiled_stats, enemy_level, character_level, enemy_data, **kwargs):
     # Nicole's Skill also deals a one-time AoE Pyro hit on cast, separate
     # from the Grace of Kenosis buff
     scaling_stat_name = character_data["talents"]["elemental_skill"]["scaling_stat"]
@@ -35,3 +35,39 @@ def get_nicole_skill_dmg(character_data, talent_level, compiled_stats, enemy_lev
     skill_defense_applied = apply_defense_multiplier(skill_dmg, enemy_level, character_level)
     skill_final = apply_res_multiplier(enemy_data, elemental_bonus, skill_defense_applied)
     return skill_final
+
+
+def nicole_skill_wrapper(character_data, compiled_stats, talent_level, enemy_level, character_level, enemy_data, **kwargs):
+    # Casting Nicole's Skill is ONE action that does TWO things: deals a
+    # one-time AoE hit, and creates the Grace of Kenosis buff. This wrapper
+    # composes the two already-independent, already-tested functions above
+    # into one registry-ready action, returning a consistent shape the
+    # conductor can read: {"damage": ..., "buff_created": {...} or None}.
+    #
+    # Grace of Kenosis's mechanic-specific facts (it targets "atk", lasts
+    # 1200 frames/20s, and triggers on cast — hitmark 0, not partway through
+    # the animation) are hardcoded here since they're fixed, known truths
+    # about this specific buff, not values that vary per-call.
+    nicole_damage = get_nicole_skill_dmg(
+        character_data=character_data,
+        talent_level=talent_level,
+        compiled_stats=compiled_stats,
+        enemy_level=enemy_level,
+        character_level=character_level,
+        enemy_data=enemy_data,
+    )
+    nicole_buffs = get_nicole_skill_buff(
+        character_data=character_data,
+        talent_level=talent_level,
+        compiled_stats=compiled_stats,
+    )
+    nicole_skill = {
+        "damage": nicole_damage,
+        "buff_created": {
+            "stat": "atk",
+            "value": nicole_buffs,
+            "duration": 1200,
+            "hitmark": 0,
+        },
+    }
+    return nicole_skill

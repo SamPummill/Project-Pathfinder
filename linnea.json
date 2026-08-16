@@ -1,0 +1,114 @@
+{
+  "display_name": "linnea",
+  "element": "geo",
+  "weapon_type": "bow",
+  "base_stats_by_level": {
+    "20": {"max_hp": 1998.11, "atk": 28.98, "def": 183.13, "crit_rate": 5.0},
+    "40": {"max_hp": 3978.05, "atk": 57.70, "def": 364.61, "crit_rate": 5.0},
+    "50": {"max_hp": 5116.70, "atk": 74.21, "def": 468.97, "crit_rate": 9.8},
+    "60": {"max_hp": 6418.69, "atk": 93.09, "def": 588.30, "crit_rate": 14.6},
+    "70": {"max_hp": 7570.43, "atk": 109.80, "def": 693.86, "crit_rate": 14.6},
+    "80": {"max_hp": 8729.86, "atk": 126.61, "def": 800.13, "crit_rate": 19.4},
+    "90": {"max_hp": 9894.70, "atk": 143.51, "def": 906.89, "crit_rate": 24.2},
+    "95": {"max_hp": 10245.94, "atk": 159.65, "def": 939.09, "crit_rate": 24.2},
+    "100": {"max_hp": 10597.96, "atk": 175.79, "def": 971.35, "crit_rate": 24.2}
+  },
+  "base_stats": {
+    "max_stamina": 240,
+    "elemental_mastery": 0,
+    "crit_dmg": 50.0,
+    "energy_recharge": 100.00,
+    "cd_reduction": 0.00,
+    "shield_strength": 0.00
+    },
+    "bonus_dmg_values" : {
+      "pyro": 0.00,     
+      "hydro": 0.00,    
+      "dendro": 0.00,
+      "electro": 0.00,
+      "anemo": 0.00,
+      "cryo": 0.00,
+      "geo": 0.00,
+      "physical": 0.00,
+      "other": 0.00
+    },
+   "percent_stats_by_level": {
+   },  
+  "talents": {
+    "normal_attack": {
+      "elemental_dmg_type": "physical", 
+      "scaling_stat": "atk",
+      "hits": [
+        {"hit_number": "1", 
+        "multiplier_by_level": {
+          "1": 59,
+          "2": 63.8,
+          "3": 68.6,
+          "4": 75.46,
+          "5": 80.26,
+          "6": 85.75,
+          "7": 93.3,
+          "8": 100.84,
+          "9": 108.39,
+          "10": 116.62,
+          "11": 124.85
+          }
+        },
+        {"hit_number": "2", 
+        "multiplier_by_level": {
+          "1": 51.15,
+          "2": 55.32,
+          "3": 59.48,
+          "4": 65.43,
+          "5": 69.59,
+          "6": 74.35,
+          "7": 80.89,
+          "8": 87.43,
+          "9": 93.98,
+          "10": 101.11,
+          "11": 108.25
+          }
+        },
+        {"hit_number": "3", 
+        "multiplier_by_level": {
+          "1": 81.63,
+          "2": 88.28,
+          "3": 94.92,
+          "4": 104.41,
+          "5": 111.06,
+          "6": 118.65,
+          "7": 129.09,
+          "8": 139.53,
+          "9": 149.97,
+          "10": 161.36,
+          "11": 172.75
+          }
+        }
+      ]
+    },
+      "elemental_skill": {
+      "scaling_stat": "def",
+      "elemental_dmg_type": "geo",
+      "duration": 25,
+      "cd": 18,
+      "pound_pound_pummeler_dmg_by_level": {
+        "1": 96.0, "2": 103.2, "3": 110.4, "4": 120.0, "5": 127.2, "6": 134.4,
+        "7": 144.0, "8": 153.6, "9": 163.2, "10": 172.8, "11": 182.4, "12": 192.0, "13": 204.0
+      },
+      "heavy_overdrive_hammer_dmg_by_level": {
+        "1": 100.0, "2": 107.5, "3": 115.0, "4": 125.0, "5": 132.5, "6": 140.0,
+        "7": 150.0, "8": 160.0, "9": 170.0, "10": 180.0, "11": 190.0, "12": 200.0, "13": 212.5
+      },
+      "million_ton_crush_dmg_by_level": {
+        "1": 400.0, "2": 430.0, "3": 460.0, "4": 500.0, "5": 530.0, "6": 560.0,
+        "7": 600.0, "8": 640.0, "9": 680.0, "10": 720.0, "11": 760.0, "12": 800.0, "13": 850.0
+    }
+    },
+    "elemental_burst": {
+      "cd": 15,
+      "energy_cost": 60,
+      "note": "no damage — resets Lumi's active duration if already summoned, otherwise fresh-summons Lumi in Super Power Form. Healing effect is out of scope (matches project's earlier decision to exclude healing_bonus)."
+    } 
+  }
+}
+  

@@ -21,7 +21,7 @@ def get_navia_elemental_skill_base_multiplier(character_data, talent_level):
     return base_multiplier
 
 
-def calculate_navia_skill_damage(character_data, crystal_shrapnel_stacks, talent_level, enemy_level, character_level, compiled_stats, enemy_data):
+def calculate_navia_skill_damage(character_data, crystal_shrapnel_stacks, talent_level, enemy_level, character_level, compiled_stats, enemy_data, **kwargs):
     # renamed from calculate_skill_damage — Navia-specific due to the
     # shardshot-stack scaling mechanic
     base_multiplier = get_navia_elemental_skill_base_multiplier(character_data, talent_level)
@@ -44,7 +44,27 @@ def calculate_navia_skill_damage(character_data, crystal_shrapnel_stacks, talent
     return final
 
 
-def calculate_navia_burst_damage(character_data, talent_level, enemy_level, character_level, compiled_stats, enemy_data):
+def navia_skill_wrapper(character_data, crystal_shrapnel_stacks, talent_level, enemy_level, character_level, compiled_stats, enemy_data, **kwargs):
+    # calculate_navia_skill_damage() returns a raw number, not a dict — but
+    # the conductor expects every registry action to return a consistent
+    # {"damage": ..., "buff_created": ... or None} shape, since it always
+    # calls result.get("buff_created", None) after every action regardless
+    # of which character/talent it was. This thin wrapper supplies that
+    # consistent shape without changing calculate_navia_skill_damage() at
+    # all. Navia's Skill doesn't create any buff, so buff_created is None.
+    damage = calculate_navia_skill_damage(
+        character_data=character_data,
+        crystal_shrapnel_stacks=crystal_shrapnel_stacks,
+        talent_level=talent_level,
+        enemy_level=enemy_level,
+        character_level=character_level,
+        compiled_stats=compiled_stats,
+        enemy_data=enemy_data,
+    )
+    return {"damage": damage, "buff_created": None}
+
+
+def calculate_navia_burst_damage(character_data, talent_level, enemy_level, character_level, compiled_stats, enemy_data, **kwargs):
     # renamed from calculate_burst_damage — Navia-specific due to the
     # instant Skill DMG + 3-hit Cannon Fire Support dual-component structure
     scaling_stat_name = character_data["talents"]["elemental_burst"]["scaling_stat"]

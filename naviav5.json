@@ -3,15 +3,15 @@
   "element": "geo",
   "weapon_type": "claymore",
   "base_stats_by_level": {
-  "20": {"max_hp": 2554.52, "atk": 71.00, "def": 160.17, "crit_dmg": 50.0},
-  "40": {"max_hp": 5085.80, "atk": 141.36, "def": 318.88, "crit_dmg": 50.0},
-  "50": {"max_hp": 6541.52, "atk": 181.81, "def": 410.15, "crit_dmg": 59.6},
-  "60": {"max_hp": 8206.07, "atk": 228.08, "def": 514.51, "crit_dmg": 69.2},
-  "70": {"max_hp": 9678.53, "atk": 269.00, "def": 606.84, "crit_dmg": 69.2},
-  "80": {"max_hp": 11160.83, "atk": 310.20, "def": 699.78, "crit_dmg": 78.8},
-  "90": {"max_hp": 12650.03, "atk": 351.59, "def": 793.15, "crit_dmg": 88.4},
-  "95": {"max_hp": 13099.09, "atk": 391.14, "def": 821.30, "crit_dmg": 88.4},
-  "100": {"max_hp": 13549.13, "atk": 430.70, "def": 849.52, "crit_dmg": 88.4}
+    "20": {"max_hp": 2554.52, "atk": 71.00, "def": 160.17, "crit_dmg": 50.0},
+   "40": {"max_hp": 5085.80, "atk": 141.36, "def": 318.88, "crit_dmg": 50.0},
+    "50": {"max_hp": 6541.52, "atk": 181.81, "def": 410.15, "crit_dmg": 59.6},
+   "60": {"max_hp": 8206.07, "atk": 228.08, "def": 514.51, "crit_dmg": 69.2},
+   "70": {"max_hp": 9678.53, "atk": 269.00, "def": 606.84, "crit_dmg": 69.2},
+   "80": {"max_hp": 11160.83, "atk": 310.20, "def": 699.78, "crit_dmg": 78.8},
+   "90": {"max_hp": 12650.03, "atk": 351.59, "def": 793.15, "crit_dmg": 88.4},
+   "95": {"max_hp": 13099.09, "atk": 391.14, "def": 821.30, "crit_dmg": 88.4},
+   "100": {"max_hp": 13549.13, "atk": 430.70, "def": 849.52, "crit_dmg": 88.4}
   },
   "base_stats": {
     "max_stamina": 240,
@@ -31,107 +31,80 @@
       "geo": 0.00,
       "physical": 0.00,
       "other": 0.00
-    },               
+    },
+    "percent_stats_by_level": {
+    },                 
   "talents": {
     "normal_attack": {
       "elemental_dmg_type": "physical", 
       "scaling_stat": "atk",
       "hits": [
         {"hit_number": "1", 
-        "multiplier_by_level": {
-          "1": 93.52,
-          "2": 101.13,
-          "3": 108.74,
-          "4": 119.62,
-          "5": 127.23,
-          "6": 135.93,
-          "7": 147.89,
-          "8": 159.85,
-          "9": 171.81,
-          "10": 184.86,
-          "11": 197.91
-          }
+        "multiplier_by_level": { "1": 93.52, "2": 101.13, "3": 108.74, "4": 119.62, "5": 127.23, "6": 135.93, "7": 147.89, "8": 159.85, "9": 171.81, "10": 184.86, "11": 197.91 },
+        "frame_data": {
+          "hitmark": 23,
+          "hitlag_seconds": 0.06,
+          "next_na_frame": 28,
+          "skill_cancel_frame": null,
+          "jump_cancel_frame": null
+        }
         },
         {"hit_number": "2", 
-        "multiplier_by_level": {
-          "1": 86.51,
-          "2": 93.55,
-          "3": 100.59,
-          "4": 110.65,
-          "5": 117.69,
-          "6": 125.74,
-          "7": 136.8,
-          "8": 147.87,
-          "9": 158.93,
-          "10": 171,
-          "11": 183.07
-          }
+        "multiplier_by_level": { "1": 86.51, "2": 93.55, "3": 100.59, "4": 110.65, "5": 117.69, "6": 125.74, "7": 136.8, "8": 147.87, "9": 158.93, "10": 171, "11": 183.07 },
+        "frame_data": {
+          "hitmark": 22,
+          "hitlag_seconds": 0.06,
+          "next_na_frame": 42,
+          "skill_cancel_frame": null,
+          "jump_cancel_frame": null
+        }
         },
-        {"hit_number": "3a", 
-        "multiplier_by_level": {
-          "1": 34.89,
-          "2": 37.73,
-          "3": 40.56,
-          "4": 44.62,
-          "5": 47.46,
-          "6": 50.71,
-          "7": 55.17,
-          "8": 59.63,
-          "9": 64.09,
-          "10": 68.96,
-          "11": 73.83
-          }
+        {"hit_number": "3a",
+        "multiplier_by_level": { "1": 34.89, "2": 37.73, "3": 40.56, "4": 44.62, "5": 47.46, "6": 50.71, "7": 55.17, "8": 59.63, "9": 64.09, "10": 68.96, "11": 73.83 },
+        "frame_data": {
+          "hitmark": 31,
+          "hitlag_seconds": 0.01,
+          "next_na_frame": 31,
+          "skill_cancel_frame": null,
+          "jump_cancel_frame": null
+        }
         },
         {"hit_number": "3b",
-        "multiplier_by_level": {
-          "1": 34.89,
-          "2": 37.73,
-          "3": 40.56,
-          "4": 44.62,
-          "5": 47.46,
-          "6": 50.71,
-          "7": 55.17,
-          "8": 59.63,
-          "9": 64.09,
-          "10": 68.96,
-          "11": 73.83
-          }
+        "multiplier_by_level": { "1": 34.89, "2": 37.73, "3": 40.56, "4": 44.62, "5": 47.46, "6": 50.71, "7": 55.17, "8": 59.63, "9": 64.09, "10": 68.96, "11": 73.83 },
+        "frame_data": {
+          "hitmark": 8,
+          "hitlag_seconds": 0.01,
+          "next_na_frame": 8,
+          "skill_cancel_frame": null,
+          "jump_cancel_frame": null
+        }
         },
-        {"hit_number": "3c", 
-        "multiplier_by_level": {
-          "1": 34.89,
-          "2": 37.73,
-          "3": 40.56,
-          "4": 44.62,
-          "5": 47.46,
-          "6": 50.71,
-          "7": 55.17,
-          "8": 59.63,
-          "9": 64.09,
-          "10": 68.96,
-          "11": 73.83
-          }
+        {"hit_number": "3c",
+        "multiplier_by_level": { "1": 34.89, "2": 37.73, "3": 40.56, "4": 44.62, "5": 47.46, "6": 50.71, "7": 55.17, "8": 59.63, "9": 64.09, "10": 68.96, "11": 73.83 },
+        "frame_data": {
+          "hitmark": 9,
+          "hitlag_seconds": 0.01,
+          "next_na_frame": 9,
+          "skill_cancel_frame": 30,
+          "jump_cancel_frame": 29
+        }  
         },
         {"hit_number": "4", 
-        "multiplier_by_level": {
-          "1": 133.43,
-          "2": 144.29,
-          "3": 155.15,
-          "4": 170.67,
-          "5": 181.53,
-          "6": 193.94,
-          "7": 211.01,
-          "8": 228.07,
-          "9": 245.14,
-          "10": 263.76,
-          "11": 282.38
-          }
+        "multiplier_by_level": { "1": 133.43, "2": 144.29, "3": 155.15, "4": 170.67, "5": 181.53, "6": 193.94, "7": 211.01, "8": 228.07, "9": 245.14, "10": 263.76, "11": 282.38 },
+        "frame_data": {
+          "hitmark": 41,
+          "hitlag_seconds": 0.06,
+          "next_na_frame": 93,
+          "skill_cancel_frame": null,
+          "jump_cancel_frame": null
+        }
         }
       ]
     },
     "elemental_skill": {
       "elemental_dmg_type" : "geo",
       "scaling_stat": "atk",
+      "action_frams": 38,
       "base_multiplier_by_level": {
         "1": 394.8,
         "2": 424.41,

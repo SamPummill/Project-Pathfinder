@@ -112,3 +112,16 @@ def calculate_final_stats(build_total, flat_totals, bonus_totals, active_buffs=N
         stat_total[total] = flat_totals[total] + build_stat + buff_stats
     stat_total.update(bonus_totals)
     return stat_total
+
+
+def apply_buffs_to_stats(compiled_stats, buffs):
+    # Takes an already-finished, STATIC compiled_stats dict (the kind stored
+    # in `party`) and a small {stat: value} dict of currently-active buffs
+    # (the output of get_active_buff_totals()), and returns a NEW dict with
+    # those buffs added on top — never mutating the original compiled_stats,
+    # so the static baseline stored in `party` stays clean and reusable for
+    # every future action, regardless of what's active right now.
+    copied_stats = compiled_stats.copy()
+    for stat in buffs:
+        copied_stats[stat] = copied_stats[stat] + buffs[stat]
+    return copied_stats
