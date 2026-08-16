@@ -205,8 +205,68 @@ system has been designed and verified for the first time.
   enhancements to Grace of Kenosis) is deliberately out of scope — requires 
   party-composition modeling, continuous-on-field-time tracking, and 
   event-triggered re-buffing, none of which exist yet.
+  
+## v2.1.0 — Conductor v1: First Working Rotation
 
-## Architecture Notes (update)
+The conductor exists and works. This version answers the question Pathfinder 
+was built to answer: a real, buff-aware, frame-timed multi-character rotation 
+number, produced end-to-end from real build data.
+
+### Added
+- **`run_conductor()`**: walks an ordered rotation of action names, tracks a 
+  single global frame timeline, checks/applies currently-active buffs before 
+  each action (via `is_buff_active()`/`get_active_buff_totals()`, built last 
+  session), and registers any buff an action creates — stamped with its true 
+  global start frame (`current global frame + the buff's own hitmark offset`, 
+  not just the action's start) so buffs that trigger partway through an 
+  animation will be handled correctly once per-hit precision exists.
+- **Registry pattern**: actions are looked up by name (`"nicole_skill"`, 
+  `"navia_skill"`) against a dict mapping each to its function, owning 
+  character, and talent type — the conductor itself has zero built-in 
+  knowledge of any specific character or talent, keeping it fully generic 
+  and requiring no changes as new characters/actions are added.
+- **`apply_buffs_to_stats()`** (`build_compiler.py`): applies a dict of 
+  currently-active flat buffs onto a character's static `compiled_stats`, 
+  returning a new dict without ever mutating the original — `party` always 
+  stores the clean, buff-free baseline.
+- **Consistent action-return shape**: every registered action now returns 
+  `{"damage": ..., "buff_created": {...} or None}`. Added `navia_skill_wrapper()` 
+  and `nicole_skill_wrapper()` to give `calculate_navia_skill_damage()` and 
+  Nicole's Skill this consistent shape without modifying the original 
+  functions — Nicole's wrapper composes her damage and Grace of Kenosis buff 
+  calculations (previously two separate function calls) into one action, 
+  since casting her Skill is genuinely one action that does two things.
+- **Real `main.py`**: compiles Navia's full build (Character + Weapon + 5 
+  Artifacts), runs the conductor against a real two-action rotation 
+  (`nicole_skill` → `navia_skill`), and produces a verified, correct total 
+  rotation damage number. Verified against hand-math: buffed vs. unbuffed 
+  Skill damage ratio matched the expected ATK increase ratio exactly.
+- Added `action_frames` (time a character is occupied by an action, in 
+  frames) to Navia's and Nicole's Elemental Skill data — Navia's sourced 
+  from real KQM frame data (N1 cancel-window frame), Nicole's estimated 
+  from community video timing (~30-40f midpoint), pending real frame data.
+- Captured full Skill/Burst data (multiplier tables, mechanics, duration/CD) 
+  for Linnea and Columbina — not yet wired into functions.
+
+### Known limitations
+- Buff `start_frame` currently uses each action's own start (or a hardcoded 
+  hitmark of 0, accurate for Grace of Kenosis specifically) rather than 
+  true per-hit precision, since Skill/Burst functions don't yet report 
+  internal frame-indexed events the way `get_normal_attack_frame_events()` 
+  does for Normal Attack. This is architecturally ready to extend — no 
+  redesign needed, just applying the same pattern already proven there.
+- Nicole's Burst, and Linnea's/Columbina's Skill and Burst, are data-captured 
+  but not yet built into functions or wired into the registry.
+- `action_frames` is missing for every talent except Navia's and Nicole's 
+  Elemental Skill — needed before the conductor can run a full rotation 
+  across all four characters.
+- Nicole's compiled_stats in `main.py` is a placeholder (no real 
+  weapon/artifact JSON files exist for her yet).
+- Reactions (Lunar-Crystallize, etc.) remain out of scope; Linnea's and 
+  Columbina's Skill data is captured as base-element (Geo/Hydro) with 
+  reaction-type overrides deferred to future function logic.
+
+## Architecture Notes
 - Final stat compilation now happens across four distinct functions, each with a 
   single responsibility: `aggregate_equipment()` (combine Weapon + Artifacts), 
   `calculate_flat_stats()` (Character + Weapon flat stats, HP/ATK/DEF percent formula), 
@@ -226,4 +286,9 @@ system has been designed and verified for the first time.
   Artifact flat stats are added after the percent multiplier, unscaled — 
   buffs follow the same category, just re-evaluated per hit instead of 
   computed once.
-
+  - The conductor is intentionally "dumb" by design: it only knows how to
+  sequence actions and track time. It has no built-in knowledge of any 
+  character or talent type — that knowledge lives entirely in the registry 
+  (which action maps to which function/character/talent_type) and in each 
+  action's own wrapper function. Adding a new character or action requires 
+  zero changes to `conductor.py` itself.
