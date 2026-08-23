@@ -265,6 +265,81 @@ number, produced end-to-end from real build data.
 - Reactions (Lunar-Crystallize, etc.) remain out of scope; Linnea's and 
   Columbina's Skill data is captured as base-element (Geo/Hydro) with 
   reaction-type overrides deferred to future function logic.
+  
+## v2.2.0 — Stateful Mechanics & Elemental Reaction System Foundation
+
+Built the project's first real class-based state tracking, then used that 
+foundation to build a solid core of the elemental reaction system — one of 
+the most mechanically dense systems in the game — including real Aura Tax, 
+decay math, and category-specific damage formulas for four reaction 
+categories, all verified against hand-calculated values. Several 
+significant reaction types (Swirl's full complexity, Bloom family, 
+Shattered) remain open, captured honestly in Known Limitations below.
+
+### Added
+- **`CrystalShrapnel` class** (`characters/navia.py`): Navia's first stateful 
+  resource — tracks current stacks (capped at 6), with a combined 
+  `consume_stacks()` that reads and resets atomically, since the real 
+  mechanic (firing Skill) always does both together. Fully wired into 
+  `navia_skill_wrapper()` and the conductor via a new `party[character]["unique_mechanics"]` 
+  pattern — a generic, per-character dict for any stateful mechanic, so the 
+  conductor's context-building code never needs character-specific branching 
+  as new characters are added.
+- **`ElementalAura` class** (new): the project's first enemy-side persistent 
+  state, tracking every currently-applied element as a list of entries 
+  (element, gauge units, decay duration, timestamp).
+  - `apply_element()`: correctly applies the 20% Aura Tax on creation and on 
+    refresh, uses "higher gauge wins" for refreshes, and inherits decay rate 
+    from the original application — **except Pyro**, which uniquely replaces 
+    its decay rate whenever a refresh actually wins, verified as a real, 
+    documented exception (not modeled as a general rule).
+  - `get_current_gauge()`: calculates real-time decay using the verified 
+    formula `Current Gauge(t) = 0.8x × (1 - t/Base Duration)`, confirmed 
+    against hand-calculated values at t=0, halfway, and full decay.
+  - `get_elemental_reactions()`: identifies which reaction (if any) occurs 
+    when a new element meets existing auras, correctly routing across four 
+    distinct category shapes — Geo-triggered (one-directional), 
+    Anemo/Swirl-triggered (one-directional), Amplifying (Vaporize/Melt — 
+    order-sensitive, different multiplier depending on which element 
+    triggers), and Other (order-independent: Overloaded, Superconduct, 
+    Electro-Charged, Frozen, Burning).
+- **`apply_amplifying_reaction()`** (`damage_core.py`): applies Vaporize/Melt's 
+  multiplier (1.5x/2.0x depending on trigger direction) to a hit's existing 
+  damage.
+- **`apply_transformative_reaction()`** (`damage_core.py`): calculates 
+  Overloaded/Superconduct/Electro-Charged damage using the real formula 
+  (level-scaled base × EM bonus × RES), confirmed against the 5.2 patch's 
+  updated multipliers and verified with hand-calculated EM-scaling checks.
+- **`REACTION_LEVEL_MULTIPLIERS`**: full 9-point (ascension-level) table for 
+  all 8 reaction damage types, sourced directly from the wiki's level-scaling 
+  page.
+- **Party composition checks**: `party_has_lunar_enabler()` and 
+  `party_has_stellar_enabler()`, checking each character's new `vision_type` 
+  field — groundwork for routing Geo+Hydro to Lunar-Crystallize (instead of 
+  plain Crystallize) when a Moonwheel-vision character is present.
+
+### Known limitations
+- **Swirl** is more complex than initially scoped: damage differs by element 
+  (Hydro only damages the original target; Pyro/Electro/Cryo spread AoE 
+  damage to every enemy hit), requires a multi-enemy model that doesn't 
+  exist yet, and Double Swirl (two simultaneous swirls from one hit) is 
+  undocumented in code. Deferred.
+- **Bloom/Burgeon/Hyperbloom** require a persistent "Dendro Core" object 
+  (data captured in `REACTION_LEVEL_MULTIPLIERS`, no class built yet).
+- **Shattered** isn't a reaction pair lookup at all — it's a conditional 
+  check (Geo damage or Claymore heavy attack) layered on an existing Frozen 
+  aura. Not yet implemented.
+- **Lunar/Stellar reaction routing** isn't wired in yet — `party_has_lunar_enabler()`/
+  `party_has_stellar_enabler()` exist, but `get_elemental_reactions()` still 
+  always uses the plain (non-Lunar) Geo table regardless of party composition.
+- **Lumi (Linnea) and Gravity Interference (Columbina)** — both are now 
+  understood to require the same class-based, stateful pattern proven 
+  tonight with `CrystalShrapnel` and `ElementalAura`, but neither has been 
+  built yet.
+- Tie-breaking behavior when two applications have exactly equal gauge 
+  values is inferred (treated as no-change), not explicitly documented — 
+  judged practically irrelevant given how unlikely simultaneous-frame ties 
+  are in real play.
 
 ## Architecture Notes
 - Final stat compilation now happens across four distinct functions, each with a 
@@ -292,3 +367,14 @@ number, produced end-to-end from real build data.
   (which action maps to which function/character/talent_type) and in each 
   action's own wrapper function. Adding a new character or action requires 
   zero changes to `conductor.py` itself.
+- Character-specific persistent state (Crystal Shrapnel, and future 
+  mechanics like Lumi) lives in `party[character]["unique_mechanics"]`, a 
+  per-character dict of arbitrary objects. The conductor always offers this 
+  key generically (`party[character].get("unique_mechanics", {})`) regardless 
+  of whether a character has one — new characters with unique state never 
+  require conductor changes, only an addition to their own `party` entry and 
+  wrapper function.
+- Enemy elemental state now has a real home: `ElementalAura`, separate from 
+  the static `resistances` dict already on Enemy JSON. This mirrors the 
+  Character/Build separation from early in the project — static reference 
+  data (resistances) vs. compute-on-demand, time-dependent state (auras).
