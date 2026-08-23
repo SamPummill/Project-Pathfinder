@@ -1,6 +1,18 @@
 from damage_core import calculate_base_damage, apply_defense_multiplier, apply_res_multiplier
 
 
+class CrystalShrapnel:
+    def __init__(self, crystal_shrapnel_stacks=0):
+        self.crystal_shrapnel_stacks = crystal_shrapnel_stacks
+
+    def add_stack(self):
+        self.crystal_shrapnel_stacks = min(self.crystal_shrapnel_stacks + 1, 6)
+        
+    def consume_stacks(self):
+        stacks = self.crystal_shrapnel_stacks
+        self.crystal_shrapnel_stacks = 0
+        return stacks
+
 def get_navia_elemental_skill_multiplier(character_data, crystal_shrapnel_stacks):
     # renamed from get_elemental_skill_multiplier — this is Navia's own
     # Crystal Shrapnel stack mechanic, not a generic Skill pattern
@@ -19,7 +31,6 @@ def get_navia_elemental_skill_base_multiplier(character_data, talent_level):
     multiplier_key = str(talent_level)
     base_multiplier = base_multiplier_by_level[multiplier_key]
     return base_multiplier
-
 
 def calculate_navia_skill_damage(character_data, crystal_shrapnel_stacks, talent_level, enemy_level, character_level, compiled_stats, enemy_data, **kwargs):
     # renamed from calculate_skill_damage — Navia-specific due to the
@@ -44,7 +55,7 @@ def calculate_navia_skill_damage(character_data, crystal_shrapnel_stacks, talent
     return final
 
 
-def navia_skill_wrapper(character_data, crystal_shrapnel_stacks, talent_level, enemy_level, character_level, compiled_stats, enemy_data, **kwargs):
+def navia_skill_wrapper(character_data, navia_shrapnel, talent_level, enemy_level, character_level, compiled_stats, enemy_data, **kwargs):
     # calculate_navia_skill_damage() returns a raw number, not a dict — but
     # the conductor expects every registry action to return a consistent
     # {"damage": ..., "buff_created": ... or None} shape, since it always
@@ -54,7 +65,7 @@ def navia_skill_wrapper(character_data, crystal_shrapnel_stacks, talent_level, e
     # all. Navia's Skill doesn't create any buff, so buff_created is None.
     damage = calculate_navia_skill_damage(
         character_data=character_data,
-        crystal_shrapnel_stacks=crystal_shrapnel_stacks,
+        crystal_shrapnel_stacks=navia_shrapnel.consume_stacks(),
         talent_level=talent_level,
         enemy_level=enemy_level,
         character_level=character_level,

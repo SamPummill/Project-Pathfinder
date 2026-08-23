@@ -1,6 +1,11 @@
 from buff_system import get_active_buff_totals
 from build_compiler import apply_buffs_to_stats
 
+def party_has_lunar_enabler(party):
+    return any(party[character]["character_data"]["vision_type"] == "moonwheel" for character in party)
+
+def party_has_stellar_enabler(party):
+    return any(party[character]["character_data"]["vision_type"] == "stellar_linchpin" for character in party)
 
 def run_conductor(registry, rotation, party, enemy_data, enemy_level, character_level):
     # registry: {action_name: {"function": ..., "character": ..., "talent_type": ...}}
@@ -26,7 +31,6 @@ def run_conductor(registry, rotation, party, enemy_data, enemy_level, character_
 
         character_data = party[character]["character_data"]
         compiled_stats = party[character]["compiled_stats"]
-
         # Check which buffs are active RIGHT NOW, before this action runs,
         # using the global counter's current (pre-advance) value.
         buffs = get_active_buff_totals(buff_instances=buff_instances, current_frame=global_frame_counter)
@@ -39,7 +43,7 @@ def run_conductor(registry, rotation, party, enemy_data, enemy_level, character_
             "enemy_level": enemy_level,
             "character_level": character_level,
             "talent_level": 10,
-            "crystal_shrapnel_stacks": 6,
+            "unique_mechanics": party[character].get("unique_mechanics", {}),
         }
 
         result = function(**context)

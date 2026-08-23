@@ -2,6 +2,7 @@
   "display_name": "navia",
   "element": "geo",
   "weapon_type": "claymore",
+  "vision_type": "normal",
   "base_stats_by_level": {
     "20": {"max_hp": 2554.52, "atk": 71.00, "def": 160.17, "crit_dmg": 50.0},
    "40": {"max_hp": 5085.80, "atk": 141.36, "def": 318.88, "crit_dmg": 50.0},

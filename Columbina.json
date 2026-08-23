@@ -2,6 +2,7 @@
   "display_name": "columbina",
   "element": "hydro",
   "weapon_type": "catalyst",
+  "vision_type": "moonwheel",
   "base_stats_by_level": {
    "20": {"max_hp": 2967.49, "atk": 19.32, "def": 103.98, "crit_rate": 5.0},
     "40": {"max_hp": 5908.00, "atk": 38.46, "def": 207.02, "crit_rate": 5.0},

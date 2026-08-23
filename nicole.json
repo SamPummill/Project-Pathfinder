@@ -2,6 +2,7 @@
   "display_name": "nicole",
   "element": "pyro",
   "weapon_type": "catalyst",
+  "vision_type": "normal",
   "base_stats_by_level": {
     "20": {"max_hp": 2101.98, "atk": 69.07, "def": 113.61},
     "40": {"max_hp": 4184.83, "atk": 137.51, "def": 226.18},

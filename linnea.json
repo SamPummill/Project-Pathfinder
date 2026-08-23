@@ -2,6 +2,7 @@
   "display_name": "linnea",
   "element": "geo",
   "weapon_type": "bow",
+  "vision_type": "moonwheel",
   "base_stats_by_level": {
     "20": {"max_hp": 1998.11, "atk": 28.98, "def": 183.13, "crit_rate": 5.0},
     "40": {"max_hp": 3978.05, "atk": 57.70, "def": 364.61, "crit_rate": 5.0},
