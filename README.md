@@ -74,7 +74,7 @@ the first working version of the build compiler.
   match in-game values. Root cause identified: Artifact flat stat 
   contributions are currently being included in the same bucket as 
   Character/Weapon flat stats before the percentage multiplier is applied, 
-  when they should be added afterward instead, unscaled. Fix planned for v5.
+  when they should be added afterward instead, unscaled. Fix planned for v1.5.
 - Shardshot hit-count granularity (partial-hit-count damage tables) is 
   intentionally not modeled, since this is a ceiling calculator assuming 
   optimal execution, not a hit-registration simulator.
@@ -98,18 +98,18 @@ the first working version of the build compiler.
   applied once as a multiplier) — but only for HP, ATK, and DEF, since 
   these are the only stats with both a flat and percent form in-game. All 
   other stats (CRIT Rate, CRIT DMG, Energy Recharge, elemental DMG bonus, 
-  etc.) are purely additive. **Note**: as of v4, Artifact flat contributions 
+  etc.) are purely additive. **Note**: as of v1.4, Artifact flat contributions 
   are incorrectly included in the pre-multiplier bucket rather than added 
-  after — this is the known v4 limitation above, with a structural fix 
-  planned for v5.
+  after — this is the known v1.4 limitation above, with a structural fix 
+  planned for v1.5.
   
 ### v1.5 — Elemental Damage System, Level Scaling, Build Compiler Fix Verified
-Confirmed and closed out the v4 known issue with real in-game verification, then 
+Confirmed and closed out the v1.4 known issue with real in-game verification, then 
 built a full elemental damage type system (bonus DMG, enemy RES) and ascension-tier 
 level scaling — completing Navia's vertical slice.
 
 **Added**
-- Confirmed the v4 ATK/DEF discrepancy root cause and verified the fix in-game: 
+- Confirmed the v1.4 ATK/DEF discrepancy root cause and verified the fix in-game: 
   restructured the build compiler into three distinct functions (`aggregate_equipment()`, 
   `calculate_flat_stats()`, `calculate_final_stats()`) so Artifact flat stats are 
   correctly added after the percent multiplier, not before. DEF matched real in-game 
@@ -346,7 +346,7 @@ Shattered) remain open, captured honestly in Known Limitations below.
   single responsibility: `aggregate_equipment()` (combine Weapon + Artifacts), 
   `calculate_flat_stats()` (Character + Weapon flat stats, HP/ATK/DEF percent formula), 
   `calculate_bonus_stats()` (elemental DMG bonus aggregation across all sources), 
-  `calculate_final_stats()` (final assembly). This resolved the v4 known issue: 
+  `calculate_final_stats()` (final assembly). This resolved the v1.4 known issue: 
   Artifact flat contributions are correctly added *after* the percent multiplier is 
   applied to Character + Weapon's flat total, not folded into the same pre-multiplier 
   bucket.
